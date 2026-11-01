@@ -49,10 +49,6 @@ Rscript run.R ancestry --replicates 1:50
 Rscript run.R kinship --replicates 1:50
 ```
 
-The small phased haplotypes, PLINK files, partitions, maps, and PC covariates
-needed by those methods are included; executable binaries and caches are excluded.
-The supplied summaries are in `reports/ancestry300/` and `reports/kinship600/`.
-They summarize the original runs; new runs write their own reports.
 All five panels derive from public 1000 Genomes Phase 3 data; phenotypes are simulated.
 BOLT can fail at these small sample sizes; failed fits are marked invalid and
 counted separately in `supplement_fit_counts.csv`.

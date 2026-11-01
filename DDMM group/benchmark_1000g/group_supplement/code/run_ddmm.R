@@ -17,6 +17,8 @@ B <- Sys.getenv('BENCH', normalizePath(file.path(script_dir(), '..')))      # th
 PKG <- Sys.getenv('DDMM_PKG', normalizePath(file.path(B, '..', '..')))     # ddmm_group package root (benchmark_1000g/group_supplement -> ddmm_group)
 for (f in c('utils.R', 'ddmm.R')) source(file.path(PKG, 'R', f))
 args <- commandArgs(TRUE); dir <- args[1]
+q <- if (length(args) > 1) as.numeric(args[2]) else 0.1
+if (!is.finite(q) || q <= 0 || q >= 1) stop('q must lie between 0 and 1.')
 
 # Pilot Lasso path. glmnet ends its path at 1e-4 x lambda_max when n > p and
 # at 0.01 x lambda_max when n < p. With n = 2,504 > p = 2,000 (ALL cohort) and
@@ -103,8 +105,8 @@ for (yc in setdiff(ycols, names(done))) {
       P <- cbind(simes = simes(fit$p, a, sizes), gt$p); colnames(P) <- c('simes', paste0('rank_', RANKS)); K <- gt$rank
     }
     res_out[[r]] <- list(p = P, K = K,
-      BH = lapply(setNames(colnames(P), colnames(P)), function(t) bh(P[, t], 0.1)),
-      truncated = lapply(setNames(colnames(P), colnames(P)), function(t) truncated(P[, t], 0.1)))
+      BH = lapply(setNames(colnames(P), colnames(P)), function(t) bh(P[, t], q)),
+      truncated = lapply(setNames(colnames(P), colnames(P)), function(t) truncated(P[, t], q)))
   }
   done[[yc]] <- list(sigma = fit$sigma, tested = fit$S, resolutions = res_out)
   saveRDS(done, out_file)

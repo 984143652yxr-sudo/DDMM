@@ -27,3 +27,6 @@ semi-synthetic-1000G/reports/kinship600/*
 semi-synthetic-1000G/data/*/hap.haps
 semi-synthetic-1000G/data/*/bolt.bed
 semi-synthetic-1000G/data/*/bolt.bim
+
+# Optional full 1000G source downloads.
+**/raw_1000g/

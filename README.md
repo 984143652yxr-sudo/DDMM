@@ -5,8 +5,8 @@
 | [Spectral filters](R/README.md) | PCA, TRIM, LMM and a short DDMM example |
 | [DDMM group](DDMM%20group/README.md) | Group tests and compact 1000G rescoring inputs |
 | [Filter comparison](filter_comparison/README.md) | Admixture and family simulations |
-| [Semi-synthetic 1000G](semi-synthetic-1000G/README.md) | Five genotype panels, simulation runners, and supplied summary tables |
-| [Summary statistics](summary_statistics/README.md) | Corrected DDMM and a single AD analysis runner |
+| [Semi-synthetic 1000G](semi-synthetic-1000G/README.md) | Pooled ancestry samples, simulation and summaries |
+| [Summary statistics](summary_statistics/README.md) | Summary statistics version DDMM and AD analysis runner |
 
 ```sh
 git clone --depth 1 https://github.com/984143652yxr-sudo/DDMM.git

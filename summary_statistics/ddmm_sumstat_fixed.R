@@ -1,33 +1,4 @@
 ## ddmm_sumstat_fixed.R -- summary-statistic DDMM with the cluster fixes
-##
-## Sources the unchanged ddmm_sumstat.R (soft, lasso_gram, deflate,
-## ddmm_pvalues, bh_select) and adds ddmm_pvalues_fixed(). The original
-## ddmm_pvalues() stays available, so a driver can run both on the same input.
-##
-## What changes, relative to ddmm_pvalues()
-##
-##   FIX 1  The nodewise lambda is chosen per variant by BIC over a 30-point
-##          path, as in ddmm_group/fast_nodewise.R, instead of the single value
-##          lambda_node = sqrt(2 log p / n) shared by every variant.
-##
-##          On the z-score scale (n = 1) the old lambda_node = sqrt(2 log p) is
-##          larger than any LD correlation, so every nodewise fit was exactly
-##          zero and no decorrelation took place: the statistic reduced to
-##          z_j - Sigma_{j,-j} beta_hat_{-j}. The nodewise regression acts on
-##          Sigma, whose scale does not change when r is rescaled to z, so its
-##          penalty must not inherit the n = 1 of the z scale. The BIC uses
-##          `n_bic`, the sample size behind Sigma and r (default: n).
-##
-##   FIX 2  Not applicable: there is no group test here and the pilot is the
-##          initial lasso.
-##
-##   FIX 3  When the noise level is estimated (sigma = "estimate"), it is
-##          corrected for the degrees of freedom of the lasso,
-##              sigma^2 = n (s_y - 2 b'r + b'Sigma b) / (n - q - |S|),
-##          instead of dividing by Tr(Q'Q) = n - q. On the z scale the unit-noise
-##          convention sigma = 1 is kept (sigma = "unit", the default).
-##
-## The statistic is unchanged: T_j = sqrt(n) d_j beta_bar_j / (sigma sqrt(v_j)).
 
 source("ddmm_sumstat.R")
 

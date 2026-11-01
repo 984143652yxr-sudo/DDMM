@@ -31,7 +31,7 @@ options(warn = 1)
 caller_directory <- getwd()          # user paths are relative to where you call from
 root <- dirname(script)              # all package paths are relative to the package
 setwd(root)
-for (file in c('utils.R', 'config.R', 'simulate.R', 'methods.R', 'knockoffs.R',
+for (file in c('utils.R', 'config.R', 'data.R', 'simulate.R', 'methods.R', 'knockoffs.R',
                'pipeline.R', 'summarize.R', 'plots.R', 'cache.R')) source(file.path('R', file))
 
 main <- function() {
@@ -60,6 +60,7 @@ main <- function() {
   require_packages(c('glmnet', if ('SuSiE' %in% cfg$methods) 'susieR',
                      if ('Knockoff' %in% cfg$methods) c('knockoff', 'snpStats')))
   require_programs(cfg$methods)
+  prepare_external_inputs(cfg)
   for (panel in cfg$panels) build_cache(panel, cfg$projection)
   replicates <- parse_replicates(opt$replicates)
   run_experiment(cfg, replicates, output, panels, prepare_only = isTRUE(opt$`prepare-only`))

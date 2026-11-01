@@ -19,7 +19,7 @@ PILOT_SEED_OFFSET <- 11
 KNOCKOFF_SEED_OFFSET <- 22
 
 load_panel <- function(panel_name, cfg) {
-  list(panel = readRDS(file.path('data', panel_name, 'panel.rds')),
+  list(panel = read_panel(panel_name),
        cache = readRDS(file.path('data', panel_name, paste0('cache_', cfg$projection, '.rds'))))
 }
 

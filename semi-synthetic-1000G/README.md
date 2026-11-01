@@ -24,7 +24,8 @@ Rscript run.R kinship --replicates 1 --methods DDMM,SuSiE --out results/kinship_
 Genotype-only nodewise caches are built automatically on the first run.
 Use `--replicates 1:50` for repeated simulations; repeat a command to resume.
 Settings are in `config/ancestry.json` and `config/kinship600.json`.
-Use a new `--out` directory after changing methods or settings.
+Use a new `--out` directory after changing methods or settings. Runs from the
+older, uncompressed release also need a new output directory because input checksums changed.
 
 **Output:** fitted records in `results/`; CSV/LaTeX tables and figures in `reports/`.
 To regenerate a report without refitting:
@@ -49,6 +50,7 @@ Rscript run.R ancestry --replicates 1:50
 Rscript run.R kinship --replicates 1:50
 ```
 
+Compressed inputs are expanded automatically; duplicate matrices are restored in memory.
 All five panels derive from public 1000 Genomes Phase 3 data; phenotypes are simulated.
 BOLT can fail at these small sample sizes; failed fits are marked invalid and
 counted separately in `supplement_fit_counts.csv`.

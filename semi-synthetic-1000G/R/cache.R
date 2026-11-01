@@ -22,7 +22,7 @@ make_nodewise_cache <- function(X, Q) {
 
 build_cache <- function(panel, projection = NULL) {
   path <- file.path('data', panel)
-  d <- readRDS(file.path(path, 'panel.rds'))
+  d <- read_panel(panel)
   destination <- file.path(path, 'cache_NONE.rds')
   if ((is.null(projection) || projection == 'NONE') && !file.exists(destination))
     saveRDS(make_nodewise_cache(d$Q_none %*% d$X, d$Q_none), destination)

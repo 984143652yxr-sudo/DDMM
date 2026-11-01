@@ -13,12 +13,13 @@
 script <- normalizePath(gsub('~+~', ' ', sub('^--file=', '', grep('^--file=', commandArgs(FALSE), value = TRUE)[1]), fixed = TRUE))
 setwd(dirname(dirname(script)))
 
+source('R/data.R')
 source('R/cache.R')
 
 check_data <- function() {
   for (name in c('AFR300', 'EAS300', 'EUR300', 'MIX300', 'MIX600')) {
-    d <- readRDS(file.path('data', name, 'panel.rds'))
-    stopifnot(nrow(d$X) == d$n, ncol(d$X) == 1000, !anyDuplicated(d$ids), ncol(d$G) == 3850)
+    d <- read_panel(name)
+    stopifnot(nrow(d$X) == d$n, ncol(d$X) == 1000, !anyDuplicated(d$ids), length(d$betas$SNP) == 1000)
     stopifnot(max(abs(tcrossprod(d$Q_none) - diag(d$n - 1))) < 1e-10)
     cache <- readRDS(file.path('data', name, 'cache_NONE.rds'))
     stopifnot(max(abs(cache$X - d$Q_none %*% d$X)) < 1e-9)

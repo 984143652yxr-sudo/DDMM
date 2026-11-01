@@ -1,9 +1,33 @@
-## ddmm_sumstat_fixed.R -- summary-statistic DDMM with the cluster fixes
+# Corrected summary-statistic DDMM with per-SNP BIC nodewise tuning.
 
-source("ddmm_sumstat.R")
+soft <- function(x, lambda) sign(x) * pmax(abs(x) - lambda, 0)
 
-## Per-variant nodewise lasso on a Gram matrix, lambda chosen by BIC  (FIX 1)
-## Returns gamma (as a list), d and v for each j in S.
+## FISTA for  min 1/2 b' A b - c' b + lambda |b|_1.  Both the initial fit
+## Eq (5.3) and the nodewise regressions Eq (5.4) have this form.
+lasso_gram <- function(A, c, lambda, step, iters = 300) {
+  b <- numeric(length(c))
+  u <- b
+  t <- 1
+  for (i in seq_len(iters)) {
+    b_new <- soft(u - (A %*% u - c) / step, lambda / step)
+    t_new <- (1 + sqrt(1 + 4 * t^2)) / 2
+    u <- b_new + ((t - 1) / t_new) * (b_new - b)
+    b <- as.numeric(b_new)
+    t <- t_new
+  }
+  b
+}
+
+## PCA filter of Eq (5.2): remove the leading q eigendirections of Sigma.
+deflate <- function(Sigma, r, q) {
+  if (q == 0) return(list(Sigma = Sigma, r = r))
+  eig <- eigen(Sigma, symmetric = TRUE)
+  V <- eig$vectors[, seq_len(q), drop = FALSE]
+  mu <- eig$values[seq_len(q)]
+  list(Sigma = Sigma - V %*% (mu * t(V)),
+       r     = r - as.vector(V %*% crossprod(V, r)))
+}
+
 nodewise_bic_gram <- function(Sigma, S, n_bic, nlambda = 30L, eps = 0.01) {
   p  <- ncol(Sigma)
   eg <- eigen(Sigma, symmetric = TRUE)
@@ -28,14 +52,14 @@ nodewise_bic_gram <- function(Sigma, S, n_bic, nlambda = 30L, eps = 0.01) {
   out
 }
 
-## Fixed DDMM p-values. Same inputs as ddmm_pvalues() plus
+## Corrected DDMM p-values from (Sigma, r, n). Additional arguments:
 ##   n_bic  sample size used in the nodewise BIC (FIX 1)
 ##   sigma  "unit" (sigma = 1, z-score convention) or "estimate" (FIX 3)
 ##   s_y    y'y / n, needed only for sigma = "estimate"
 ##   cache  optional environment for nodewise fits when Sigma (and q) are
 ##          the same across calls; never share one across different Sigma
 ## Returns the p-values; attributes carry the statistic, sigma and the support.
-ddmm_pvalues_fixed <- function(Sigma, r, n = 1, q = 0, n_bic = n,
+ddmm_pvalues <- function(Sigma, r, n = 1, q = 0, n_bic = n,
                                sigma = c("unit", "estimate"), s_y = 1,
                                cache = NULL) {
   sigma <- match.arg(sigma)
@@ -86,4 +110,11 @@ ddmm_pvalues_fixed <- function(Sigma, r, n = 1, q = 0, n_bic = n,
   }
   attr(pv, "T") <- Tst; attr(pv, "sigma") <- sig; attr(pv, "support") <- S
   pv
+}
+
+## Benjamini-Hochberg, applied after pooling p-values across LD blocks.
+bh_select <- function(pv, alpha) {
+  ord <- order(pv)
+  below <- pv[ord] <= alpha * seq_along(pv) / length(pv)
+  if (any(below)) ord[seq_len(max(which(below)))] else integer(0)
 }

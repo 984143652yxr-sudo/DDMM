@@ -6,7 +6,7 @@ PANEL_CODE <- c(AFR300 = 1L, EAS300 = 2L, EUR300 = 3L, MIX300 = 4L, MIX600 = 5L)
 # Files whose content defines the simulated data and the fitted methods.
 # Editing any of them changes the design fingerprint, so an existing run
 # directory cannot silently mix old and new code.
-SCIENCE_CODE <- c('R/simulate.R', 'R/methods.R', 'R/knockoffs.R')
+SCIENCE_CODE <- c('R/data.R', 'R/simulate.R', 'R/methods.R', 'R/knockoffs.R')
 
 EXPERIMENT_ALIASES <- c(ancestry = 'ancestry', ancestry300 = 'ancestry',
                         kinship = 'kinship600', kinship600 = 'kinship600')

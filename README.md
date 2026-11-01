@@ -6,10 +6,10 @@
 | [DDMM group](DDMM%20group/README.md) | Group tests and compact 1000G rescoring inputs |
 | [Filter comparison](filter_comparison/README.md) | Admixture and family simulations |
 | [Semi-synthetic 1000G](semi-synthetic-1000G/README.md) | Five genotype panels, simulation runners, and supplied summary tables |
-| [Summary statistics](summary_statistics/README.md) | DDMM, GhostKnockoff, AR(1), and AD analysis |
+| [Summary statistics](summary_statistics/README.md) | Corrected DDMM and a single AD analysis runner |
 
 ```sh
-git clone https://github.com/984143652yxr-sudo/DDMM.git
+git clone --depth 1 https://github.com/984143652yxr-sudo/DDMM.git
 cd DDMM
 ```
 

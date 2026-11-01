@@ -1,52 +1,38 @@
 # Summary-statistic DDMM
 
-Inputs: $S=X^TX/n$, $r=X^Ty/n$, and $s_y=y^Ty/n$ when estimating the noise scale.
-The R argument for $S$ is named `Sigma`.
+Two R files:
+
+- `ddmm_summary.R`: self-contained corrected DDMM, including Gram-Lasso,
+  PCA filtering, per-SNP BIC nodewise tuning, noise estimation, and BH selection.
+- `run_ad.R`: downloads public AD data, runs corrected DDMM and GhostKnockoff,
+  and produces tables, a comparison figure, and locus-support summaries.
 
 ```r
 install.packages(c("glmnet", "data.table", "Matrix"))
 ```
 
-Run from this folder:
-
 ```sh
-Rscript example.R
-# Small AR(1) execution check:
-AR1_REPS=2 AR1_P=40 AR1_N=80 AR1_K=3 AR1_AMPLITUDES=3,7 NCORES=1 Rscript ddmm_vs_ghostknockoff_ar1_fixed.R
-# Full simulation (100 replicates by default):
-Rscript ddmm_vs_ghostknockoff_ar1_fixed.R
+Rscript run_ad.R          # all chromosomes
+Rscript run_ad.R 21,22    # small execution check
 ```
 
-| File | Purpose |
-|---|---|
-| `ddmm_sumstat.R` | Original implementation |
-| `ddmm_sumstat_fixed.R` | Adds per-SNP BIC nodewise tuning and optional noise estimation |
-| `ghostknockoff.R` | GhostKnockoff comparator |
-| `*_ar1_fixed.R` | AR(1) comparison, original and corrected DDMM on the same draws |
-| `*_realdata_fixed.R` | AD comparison |
-| `ddmm_ad_replication_fixed.R` | Locus overlap/support tables |
+Results are generated in `output/`; downloaded data stay in `data/`.
+Only the corrected DDMM results and the GhostKnockoff comparator are reported.
+The chromosome subset is an execution check, not the complete AD analysis.
 
-The versions without `_fixed` retain the original analyses. Outputs are written
-to `output_fixed/` or `output/` and are excluded from Git.
+For other datasets, $S=X^TX/n$, $r=X^Ty/n$, $s_y=y^Ty/n$:
 
-## Alzheimer's disease data
-
-Public source: [GhostKnockoff Section 5](https://github.com/GuJQ5/FWER_Knockoff_filter/tree/main/Section%205).
-The downloader pins an upstream commit and saves candidate z-scores, annotations,
-and LD matrices under `data/realdata_section5/`.
-
-```sh
-Rscript download_data.R
-Rscript ddmm_vs_ghostknockoff_realdata_fixed.R
-Rscript ddmm_ad_replication_fixed.R fix
+```r
+source("ddmm_summary.R")
+p <- ddmm_pvalues(Sigma=S, r=r, n=n, n_bic=n, sigma="estimate", s_y=s_y)
 ```
+Use `sigma="estimate"` to estimate noise. For marginal z-scores use `r=z`,
+`n=1`, `sigma="unit"`, and set `n_bic` separately.
 
-For a short execution check, give `21,22` to the first two commands.
-That subset is not the full AD analysis; use all chromosomes for pooled testing.
-The discovery data are preselected candidates, not an unfiltered genome-wide scan.
+The AD runner uses `N_BIC=50000` by default, a nodewise tuning setting rather
+than a shared GWAS sample-size claim. Example: `N_BIC=5000 Rscript run_ad.R`.
+It uses LD shrinkage 0.1 and five equicorrelated GhostKnockoff copies.
 
-On the z-score scale, use `n = 1` and unit noise; `n_bic` controls nodewise
-penalty tuning separately. The AD script explores `n_bic = 500, 5000, 50000`
-and defaults to 50000 (`N_MAIN`); these are sensitivity settings, not a claim
-about a shared GWAS sample size. GhostKnockoff uses `equi` by default;
-`Rdsdp` is needed for the optional `sdp` construction.
+[Public AD source](https://github.com/GuJQ5/FWER_Knockoff_filter/tree/main/Section%205)
+(commit pinned in the runner). These are preselected candidate variants;
+nominal support across the contributing studies is descriptive, not independent validation.

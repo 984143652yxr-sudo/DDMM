@@ -1,55 +1,53 @@
 # DDMM group
 
-## 1000G benchmark: generate scores and tables
+Both workflows use the included data. Run terminal commands from `DDMM group/`.
+
+## 1. 1000G benchmark: regenerate scores and tables
+
+Scores the saved DDMM, SuSiE, and KnockoffGWAS selections for EUR, MIX, and ALL.
 
 ```sh
 Rscript -e 'install.packages("data.table", repos="https://cloud.r-project.org")'
 Rscript reproduce.R
 ```
 
-Uses the included EUR, MIX, and ALL designs and saved DDMM, SuSiE, and
-KnockoffGWAS selections. No 1000G download or model refitting is required.
-These small selection files are scoring inputs; tables and figures are created when you run the script.
+**Output:** `benchmark_1000g/group_supplement/results/` — CSV scores, `tables.md`, LaTeX tables, and `benchmark_group.png` / `.pdf`.
 
-**Output:** `benchmark_1000g/group_supplement/results/` — `tables.md`, CSV scores,
-LaTeX tables, and `benchmark_group.png` / `.pdf`.
+## 2. Compare group-level test statistics
 
-## Toy example: fit and report
+Fits DDMM on the bundled KnockoffGWAS example across seven group resolutions. Compares Simes with effective-rank, rank-3, and full-rank chi-square tests; reports power, false discovery proportion, and global-null error rates.
 
-Install once:
+Install once in R:
 
 ```r
 install.packages(c("data.table", "jsonlite", "glmnet", "BiocManager"))
 BiocManager::install("snpStats")
 ```
 
+Run the supplied phenotype and 20 simulated signal/null replicates:
+
 ```sh
-Rscript run.R knockoffgwas --shipped --no-report
-Rscript report.R knockoffgwas
+Rscript run.R knockoffgwas --shipped --replicates 1:20 \
+  --rank effective,3,full --out results/group_tests
 ```
 
-**Output:** fits in `results/knockoffgwas/`, tables and figures in `reports/knockoffgwas/`.
-For repeated simulations, add `--replicates 1:20` to `run.R`.
+**Output:** fitted results in `results/group_tests/`; CSV summaries, LaTeX tables, and figures in `reports/group_tests/`. Reports are generated automatically.
 
-## Settings and files
+To regenerate reports from existing fits:
 
-[config/knockoffgwas.json](config/knockoffgwas.json) controls the **toy example**:
+```sh
+Rscript report.R knockoffgwas --input results/group_tests --output reports/group_tests
+```
 
-| Setting | Meaning |
-|---|---|
-| `q` | BH false discovery rate level; default 0.1 |
-| `phenotype.effect_scale`, `noise_sd` | Simulated signal strength and noise SD |
-| `phenotype.seed_base` | Replicate seed is this value + replicate number |
-| `output` | Folder for fits; use a new folder after changing settings |
+### Parameters to tune
 
-Keep data paths and partition columns unchanged for the supplied example.
-Use `--rank effective`, `--rank 3`, or `--rank full` to choose the group-test rank.
-The 1000G workflow uses saved DDMM/KnockoffGWAS selections at q = 0.1;
-this toy config does not change them.
-
-- `R/`: DDMM implementation and reporting functions.
-- `data/knockoffgwas/`: toy genotypes, phenotypes, partitions, and comparator inputs.
-- `benchmark_1000g/group_supplement/`: panel data, comparator inputs, and analysis scripts.
-- `input_checksums.csv`: input integrity checks used by `reproduce.R`.
+| Parameter | Where | Meaning |
+|---|---|---|
+| `--replicates 1:20` | Command | 20 simulated signal datasets and 20 global-null datasets; use `1` for a quick run. |
+| `--rank effective,3,full` | Command | Chi-square ranks: LD-based effective rank, fixed rank 3, or full group dimension. Simes is always included. |
+| `q` | [Config](config/knockoffgwas.json) | BH FDR level within each resolution; default `0.1`. |
+| `phenotype.effect_scale` | Config | Simulated effect multiplier; default `-0.256`. |
+| `phenotype.noise_sd` | Config | Simulated noise standard deviation; default `1.06`. |
+| `--out results/group_tests` | Command | Fit directory. Choose a new directory after changing model settings. |
 
 [Data sources](DATA_SOURCES.md)

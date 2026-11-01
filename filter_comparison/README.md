@@ -35,5 +35,3 @@ estimated noise covariance is passed through each filter. Discovery uses BH
 at 0.1; Lasso baselines select nonzero coefficients. MSPE measures fixed-effect
 prediction on held-out outcomes. Smoke runs check execution, not FDR calibration.
 
-These cleaned scripts use the current shared DDMM core and covariance-aware
-standard errors; they are not a byte-for-byte replay of the exploratory scripts.

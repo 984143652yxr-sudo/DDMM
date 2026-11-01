@@ -34,5 +34,3 @@ than a shared GWAS sample-size claim. Example: `N_BIC=5000 Rscript run_ad.R`.
 It uses LD shrinkage 0.1 and five equicorrelated GhostKnockoff copies.
 
 [Public AD source](https://github.com/GuJQ5/FWER_Knockoff_filter/tree/main/Section%205)
-(commit pinned in the runner). These are preselected candidate variants;
-nominal support across the contributing studies is descriptive, not independent validation.

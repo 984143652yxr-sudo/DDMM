@@ -1,7 +1,5 @@
 # DDMM group
 
-Run commands from this directory. Generated tables, figures, and fitted outputs are excluded from Git.
-
 ## 1000G benchmark: generate scores and tables
 
 ```sh

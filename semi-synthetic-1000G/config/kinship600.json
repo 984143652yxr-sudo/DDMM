@@ -1,0 +1,29 @@
+{
+  "experiment": "kinship",
+  "title": "MIX600 with kinship confounding",
+  "model": "y = a X beta0 + u + epsilon, u ~ N(0, sigma_g^2 K), epsilon ~ N(0, I); n = 600 (200 per ancestry), p = 1000, 20 causal SNPs; DDMM/SuSiE/Knockoff on PC3-projected data; BOLT-LMM-inf on raw data with PC1-3 covariates",
+
+  "panels": ["MIX600"],
+  "amplitudes": [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3],
+  "null_case": true,
+  "methods": ["DDMM", "SuSiE", "Knockoff", "BOLT"],
+
+  "projection": "PCA",
+  "kinship_effect": true,
+  "sigma_g": 1,
+  "sigma_epsilon": 1,
+  "bolt_pc_covariates": true,
+
+  "q": 0.1,
+  "susie_L": 40,
+  "susie_pip": 0.9,
+
+  "phenotype_seed_base": 205500000,
+  "knockoff_seed_base": 205100000,
+
+  "output": "results/kinship",
+  "figure_name": "kinship600",
+  "table_caption": "MIX600 kinship experiment",
+  "table_labels": {"DDMM": "DDMM-PC3", "SuSiE": "SuSiE-PC3", "Knockoff": "HMM Knockoff+-PC3", "BOLT": "BOLT-inf + BH"},
+  "plot_labels": {"DDMM": "DDMM-PC3", "SuSiE": "SuSiE-PC3", "Knockoff": "HMM Knockoff+", "BOLT": "BOLT-BH"}
+}

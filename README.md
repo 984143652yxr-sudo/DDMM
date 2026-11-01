@@ -1,13 +1,18 @@
 # DDMM
 
-R code and small input files for DDMM group inference.
+| Module | Start here |
+|---|---|
+| [Spectral filters](R/README.md) | PCA, TRIM, LMM and a short DDMM example |
+| [DDMM group](DDMM%20group/README.md) | Group tests and compact 1000G rescoring inputs |
+| [Filter comparison](filter_comparison/README.md) | Admixture and family simulations |
+| [Semi-synthetic 1000G](semi-synthetic-1000G/README.md) | Five genotype panels, simulation runners, and supplied summary tables |
+| [Summary statistics](summary_statistics/README.md) | DDMM, GhostKnockoff, AR(1), and AD analysis |
 
 ```sh
 git clone https://github.com/984143652yxr-sudo/DDMM.git
-cd "DDMM/DDMM group"
-Rscript -e 'install.packages("data.table", repos="https://cloud.r-project.org")'
-Rscript reproduce.R
+cd DDMM
 ```
 
-This generates the 1000G benchmark scores, tables, and figures locally.
-See [DDMM group](DDMM%20group/README.md) for the toy example and settings.
+Each module lists its dependencies and run commands. Generated fits, figures,
+and caches stay local. The two requested semi-synthetic summary-table folders
+are included; public AD data are downloaded separately.

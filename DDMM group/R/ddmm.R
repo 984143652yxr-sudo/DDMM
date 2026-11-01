@@ -93,7 +93,13 @@ ensure_nodewise <- function(cache, S) {
 # Per-variant debiased Lasso: pilot, sigma and p-values
 # ---------------------------------------------------------------------------
 
-variant_tests <- function(y, xcen, nodewise) {
+variant_tests <- function(y, xcen, nodewise, noise_cov = NULL) {
+  # Optional covariance shape after filtering: Var(noise) = sigma^2 noise_cov.
+  # NULL preserves the original unfiltered calculation.
+  if (!is.null(noise_cov)) {
+    stopifnot(all(dim(noise_cov) == c(nrow(xcen), nrow(xcen))), all(is.finite(noise_cov)),
+              max(abs(noise_cov - t(noise_cov))) < 1e-8)
+  }
   lam <- glmnet::cv.glmnet(xcen, y, intercept = FALSE, standardize = FALSE, nfolds = 5)$lambda.min
   beta <- as.numeric(glmnet::glmnet(xcen, y, lambda = lam, intercept = FALSE,
                                     standardize = FALSE)$beta[, 1])
@@ -107,8 +113,10 @@ variant_tests <- function(y, xcen, nodewise) {
   sigma <- if (length(S)) {
     sv <- svd(xcen[, S, drop = FALSE], nv = 0)
     P <- diag(1, nrow(xcen)) - tcrossprod(sv$u[, seq_len(sum(sv$d > 1e-10)), drop = FALSE])
-    sqrt(sum(r^2) / sum(P^2))
-  } else sqrt(sum(r^2) / nrow(xcen))
+    df <- if (is.null(noise_cov)) sum(P^2) else sum((P %*% noise_cov) * P)
+    if (df <= 0) stop('No residual noise degrees of freedom after filtering.')
+    sqrt(sum(r^2) / df)
+  } else sqrt(sum(r^2) / if (is.null(noise_cov)) nrow(xcen) else sum(diag(noise_cov)))
 
   statistic <- numeric(ncol(xcen)); p_value <- rep(1, ncol(xcen))
   if (length(S)) {
@@ -118,6 +126,11 @@ variant_tests <- function(y, xcen, nodewise) {
     for (k in seq_along(S)) {
       j <- S[k]; f <- nodewise$fits[[j]]
       zz[k] <- f$zz; zx[k] <- f$zx; zy[k] <- v[j] - sum(f$g * v[-j])
+      if (!is.null(noise_cov)) {
+        z <- xcen[, j] - drop(xcen[, -j, drop = FALSE] %*% f$g)
+        zz[k] <- sum(z * (noise_cov %*% z))
+        if (!is.finite(zz[k]) || zz[k] <= 0) stop('Degenerate filtered nodewise variance.')
+      }
     }
     debiased <- beta[S] + zy / zx
     statistic[S] <- debiased * zx / (sigma * sqrt(zz))

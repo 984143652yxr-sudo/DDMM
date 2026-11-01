@@ -6,3 +6,20 @@
 **/cache/
 **/reports/
 **/results/
+**/cache_*.rds
+**/output/
+**/output_fixed/
+summary_statistics/data/
+# Only the two explicitly requested semi-synthetic summary tables are published.
+!semi-synthetic-1000G/reports/
+semi-synthetic-1000G/reports/*
+!semi-synthetic-1000G/reports/ancestry300/
+!semi-synthetic-1000G/reports/kinship600/
+semi-synthetic-1000G/reports/ancestry300/*
+semi-synthetic-1000G/reports/kinship600/*
+!semi-synthetic-1000G/reports/ancestry300/summary.csv
+!semi-synthetic-1000G/reports/ancestry300/supplement_fit_counts.csv
+!semi-synthetic-1000G/reports/ancestry300/ancestry_table.tex
+!semi-synthetic-1000G/reports/kinship600/summary.csv
+!semi-synthetic-1000G/reports/kinship600/supplement_fit_counts.csv
+!semi-synthetic-1000G/reports/kinship600/kinship600_table.tex

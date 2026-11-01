@@ -1,0 +1,29 @@
+{
+  "experiment": "ancestry",
+  "title": "Matched ancestry panels without confounding",
+  "model": "y = a X beta0 + epsilon, epsilon ~ N(0, I); n = 300 per panel (MIX = 100 per ancestry), p = 1000, 20 causal SNPs; DDMM/SuSiE/Knockoff on intercept-removed data (projection NONE); BOLT-LMM-inf on raw data",
+
+  "panels": ["AFR300", "EAS300", "EUR300", "MIX300"],
+  "amplitudes": [2],
+  "null_case": true,
+  "methods": ["DDMM", "SuSiE", "Knockoff", "BOLT"],
+
+  "projection": "NONE",
+  "kinship_effect": false,
+  "sigma_g": 0,
+  "sigma_epsilon": 1,
+  "bolt_pc_covariates": false,
+
+  "q": 0.1,
+  "susie_L": 40,
+  "susie_pip": 0.9,
+
+  "phenotype_seed_base": 205500000,
+  "knockoff_seed_base": 205100000,
+
+  "output": "results/ancestry",
+  "figure_name": "ancestry300",
+  "table_caption": "Matched ancestry panels, $n=300$, $p=1{,}000$",
+  "table_labels": {"DDMM": "DDMM-NONE", "SuSiE": "SuSiE PIP $>0.9$", "Knockoff": "HMM Knockoff+", "BOLT": "BOLT-LMM-inf + BH"},
+  "plot_labels": {"DDMM": "DDMM", "SuSiE": "SuSiE", "Knockoff": "HMM Knockoff+", "BOLT": "BOLT-BH"}
+}

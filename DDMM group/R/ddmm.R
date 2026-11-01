@@ -1,5 +1,5 @@
 # DDMM single-variant and group tests (the corrected version of 25 Sep 2026;
-# see docs/METHOD.md).
+# current implementation).
 #
 #   pilot     beta_hat from a 5-fold cross-validated Lasso (lambda.min), the
 #             same fit for every test (FIX 2)

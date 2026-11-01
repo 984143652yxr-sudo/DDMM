@@ -80,7 +80,7 @@ for (coh in COHORTS) {
       if (!is.null(sel[[yc]])) for (rule in c('BH', 'truncated')) for (t in names(sel[[yc]]$resolutions[[r]][[rule]]))
         add(cohort = coh, case = case, replicate = rep, resolution = r, groups = m, method = paste0('DDMM_', t), rule = rule,
             score_sets(members[[r]][sel[[yc]]$resolutions[[r]][[rule]][[t]]], ctx, nul))
-      f <- file.path(B, 'knockoffs', coh, paste0('s', 2019 + rep), 'results', sprintf('%s_%s_discoveries.txt', yc, r))
+      f <- file.path(B, 'inputs', 'knockoffgwas', coh, paste0('s', 2019 + rep), sprintf('%s_%s_discoveries.txt', yc, r))
       if (file.exists(f)) {
         d <- fread(f)
         sets <- if (nrow(d)) lapply(seq_len(nrow(d)), function(i) which(map$CHR == d$CHR[i] & map$BP >= d$BP.min[i] & map$BP <= d$BP.max[i])) else list()

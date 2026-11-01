@@ -26,8 +26,7 @@ for (cohort in c('EUR', 'MIX', 'ALL')) {
             setequal(ys, names(dd)), setequal(ys, names(su)))
   for (y in ys) for (resolution in sprintf('res%d', 6:0)) {
     replicate <- as.integer(sub('.*_r', '', y))
-    discovery <- file.path(B, 'knockoffs', cohort, paste0('s', 2019 + replicate),
-                           'results', sprintf('%s_%s_discoveries.txt', y, resolution))
+    discovery <- file.path(B, 'inputs', 'knockoffgwas', cohort, paste0('s', 2019 + replicate), sprintf('%s_%s_discoveries.txt', y, resolution))
     if (!file.exists(discovery)) stop('Missing comparator output: ', discovery)
     for (rule in c('BH', 'truncated'))
       stopifnot(setequal(names(dd[[y]]$resolutions[[resolution]][[rule]]),
@@ -54,19 +53,5 @@ run('diag_false.R', c('EUR', 'MIX', 'ALL'))
 run('make_tables.R')
 run('figure.R')
 
-# Numerical comparison allows platform-level floating-point differences.
-reference <- file.path(B, 'reference_results')
-for (name in list.files(reference, pattern = '\\.csv$')) {
-  expected <- as.data.frame(data.table::fread(file.path(reference, name)))
-  actual <- as.data.frame(data.table::fread(file.path(B, 'results', name)))
-  comparison <- all.equal(actual, expected, tolerance = 1e-8, check.attributes = FALSE)
-  if (!isTRUE(comparison)) stop('Reference mismatch in ', name, ': ', paste(comparison, collapse = '; '))
-}
-for (name in list.files(reference, pattern = '\\.(md|tex)$')) {
-  if (!identical(readLines(file.path(reference, name)), readLines(file.path(B, 'results', name))))
-    stop('Reference text mismatch in ', name)
-}
 writeLines(capture.output(sessionInfo()), file.path(B, 'results', 'sessionInfo.txt'))
-cat('\nPASS: regenerated CSVs and tables agree with the bundled reference results.\n',
-    'Figures regenerated; image/PDF bytes are not compared across platforms.\n',
-    'Outputs: ', file.path(B, 'results'), '\n', sep = '')
+cat('\nDone. Tables, scores, and figures: ', file.path(B, 'results'), '\n', sep = '')

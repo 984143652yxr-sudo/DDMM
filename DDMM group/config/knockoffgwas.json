@@ -18,8 +18,7 @@
 
   "comparator": {
     "name": "KnockoffGWAS",
-    "files": "results/example_%s_discoveries.txt",
-    "note": "published discoveries for the shipped phenotype"
+    "files": "discoveries/example_%s_discoveries.txt"
   },
 
   "q": 0.1,

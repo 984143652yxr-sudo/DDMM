@@ -19,7 +19,7 @@ CODE_FILES <- c('R/data.R', 'R/partitions.R', 'R/ddmm.R', 'R/scoring.R')
 load_experiment <- function(name) {
   path <- if (grepl('\\.json$', name)) name else file.path('config', paste0(tolower(name), '.json'))
   if (!file.exists(path)) stop('Unknown experiment "', name, '". Use knockoffgwas, or the path of a config ',
-                               'file such as legacy/knockoffzoom/knockoffzoom.json.')
+                               'file such as config/knockoffgwas.json.')
   cfg <- jsonlite::read_json(path, simplifyVector = FALSE)
   cfg$chromosomes <- unlist(cfg$chromosomes)
   cfg$config_file <- path

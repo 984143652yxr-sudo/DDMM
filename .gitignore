@@ -1,0 +1,10 @@
+.DS_Store
+.Rhistory
+.RData
+*.log
+**/__pycache__/
+DDMM group/cache/
+DDMM group/reports/
+DDMM group/benchmark_1000g/group_supplement/results/
+DDMM group/results/*
+!DDMM group/results/knockoffgwas/

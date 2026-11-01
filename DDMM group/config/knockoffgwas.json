@@ -1,0 +1,28 @@
+{
+  "experiment": "knockoffgwas",
+  "title": "KnockoffGWAS toy data, published partitions",
+  "data_dir": "data/knockoffgwas",
+  "chromosomes": [21, 22],
+
+  "partition": "published",
+  "partition_files": "data/partitions/example_chr%d.txt",
+  "resolutions": [
+    {"name": "res6", "column": "res_1"},
+    {"name": "res5", "column": "res_2"},
+    {"name": "res4", "column": "res_3"},
+    {"name": "res3", "column": "res_4"},
+    {"name": "res2", "column": "res_5"},
+    {"name": "res1", "column": "res_6"},
+    {"name": "res0", "column": "res_7"}
+  ],
+
+  "comparator": {
+    "name": "KnockoffGWAS",
+    "files": "results/example_%s_discoveries.txt",
+    "note": "published discoveries for the shipped phenotype"
+  },
+
+  "q": 0.1,
+  "phenotype": {"effect_scale": -0.2560, "noise_sd": 1.06, "seed_base": 1000, "shipped_seed": 1},
+  "output": "results/knockoffgwas"
+}

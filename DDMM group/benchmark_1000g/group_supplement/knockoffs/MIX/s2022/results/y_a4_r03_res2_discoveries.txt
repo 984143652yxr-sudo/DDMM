@@ -1,0 +1,1 @@
+CHR Group SNP.lead BP.lead Size W BP.min BP.max BP.width
